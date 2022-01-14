@@ -11,6 +11,7 @@
 * Host your written code on Public Github Repo and share the Repository link.
 * Just in case you can apply some security concepts in your API do it (Bonus!)
 
+## Note Setting Authorization Headers
+Manually set Bearer token in gql playground to access `me` profile after authentication
 
-* Your API should pass all integration tests.
 
