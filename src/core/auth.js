@@ -10,7 +10,7 @@ require("dotenv").config();
 const secret = process.env.JWT_SECRET;
 const saltRounds = 10;
 
-const createToken = ({id, role}) => jwt.sign({id, role }, secret)
+const createToken = (id, email,name) =>  jwt.sign({ name: name,  email: email, id :id }, secret);
 
 const getUserFromToken = async (token, db) => {
   try {
@@ -26,7 +26,7 @@ const authenticated = next => (root, args, context, info) => {
   if (!context.user) {
     throw new AuthenticationError('must authenticate')
   }
-
+  
   return next(root, args, context, info)
 }
 
