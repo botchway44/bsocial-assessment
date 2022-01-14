@@ -18,7 +18,7 @@ async function startApolloServer(typeDefs, resolvers) {
     // Required logic for integrating with Express
     const app = express();
     app.enable('trust proxy');
-    app.use(helmet());
+    // app.use(helmet()); 
     app.use(morgan('dev'));
     app.use(rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutes
@@ -48,15 +48,12 @@ async function startApolloServer(typeDefs, resolvers) {
       },
       typeDefs,
       resolvers,
-      introspection: process.env.NODE_ENV !== 'production',
+      introspection:true, //process.env.NODE_ENV !== 'production',
+      playground: true,   // Introspection and playground is enabled to allo us view the playground in production for testing
+      //Todo : disable this in real production app
+
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer }),
-
-        process.env.NODE_ENV === 'production' ?
-        ApolloServerPluginLandingPageGraphQLPlayground({
-          // options
-        }) :      ApolloServerPluginLandingPageLocalDefault({ footer: false })
-     
     ],
     });
   
