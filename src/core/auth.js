@@ -1,4 +1,4 @@
-const {AuthenticationError} = require('apollo-server')
+const {AuthenticationError, UserInputError} = require('apollo-server')
 const bcrypt = require ('bcrypt');
 const jwt = require('jsonwebtoken')
 var Validator = require("email-validator");
@@ -30,18 +30,24 @@ const authenticated = next => (root, args, context, info) => {
 
 
 const verifyLoginInputs = next => (root, {input}, context, info) => {
-  if (!input.email && !input.password)  throw new AuthenticationError('Email and Password are required')
-  
+  if (!input.email && !input.password)  throw new UserInputError('Email and Password are required')
+  if (!Validator.validate(input.email))  throw new UserInputError('Email is invalid')
+ 
+  //TODO : Handle special characters for password
+  if(input.password.trim() === '') throw new UserInputError('Password is required and cannot be empty')
+  if(input.password.trim().length < 8) throw new UserInputError('Password must be at least 8 characters long')
 
-  if (!Validator.validate(input.email))  throw new AuthenticationError('Email is invalid')
   return next(root, {input}, context, info);
 }
 
 const verifySignUpInputs = next => (root, {input}, context, info) => {
-  if (!input.email && !input.password && !input.name)  throw new AuthenticationError('Email and Password are required')
+  if (!input.email && !input.password && !input.name)  throw new UserInputError('Email and Password are required')
+  if (!Validator.validate(input.email))  throw new UserInputError('Email is invalid');
   
-
-  if (!Validator.validate(input.email))  throw new AuthenticationError('Email is invalid');
+  //TODO : Handle special characters for password
+  if(input.password.trim() === '') throw new UserInputError('Password is required and cannot be empty')
+  if(input.password.trim().length < 8) throw new UserInputError('Password must be at least 8 characters long')
+ 
   return next(root, {input}, context, info);
 }
 
