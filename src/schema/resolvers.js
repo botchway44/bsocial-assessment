@@ -1,4 +1,11 @@
-const {createToken,authenticated, verifyUser, verifyLoginInputs, verifySignUpInputs, saltPassword} = require('../core/auth.js');
+const {
+    verifySignUpInputs,
+    verifyLoginInputs,
+    authenticated,
+    saltPassword,
+    createToken,
+    verifyUser,
+} = require('../core/auth.js');
 const {AuthenticationError} = require('apollo-server')
 
 
