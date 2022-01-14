@@ -1,4 +1,4 @@
-const {createToken,authenticated, verifyUser, verifyLoginInputs, verifySignUpInputs} = require('../core/auth.js');
+const {createToken,authenticated, verifyUser, verifyLoginInputs, verifySignUpInputs, saltPassword} = require('../core/auth.js');
 const {AuthenticationError} = require('apollo-server')
 
 
@@ -27,7 +27,8 @@ const resolvers = {
 
             //add user to db addUser(email, password, name) 
             try {
-                await db.addUser(input.email, input.password, input.name);
+                const saltedPassword = saltPassword(input.password);
+                await db.addUser(input.email, saltedPassword, input.name);
             } catch (e) {
                 throw new Error("Account creation failed, please try again");
              }
