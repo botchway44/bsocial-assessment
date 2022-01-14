@@ -1,6 +1,7 @@
 const {createToken,authenticated, verifyUser, verifyLoginInputs, verifySignUpInputs} = require('../core/auth.js');
 const {AuthenticationError} = require('apollo-server')
-const User = require('../models/user.js');
+
+
 const resolvers = {
     Query : {        
         me: authenticated( async (parent, args, {db, user}) => {
@@ -9,7 +10,6 @@ const resolvers = {
     
       login: verifyLoginInputs( async (parent, {input}, context) => {
         const user = await context.db.findUser(input.email);
-        const newUser = User.fromModel(user);
 
         //Thro error if user not found
         if (!user) throw new AuthenticationError('Email or Password is invalid');
