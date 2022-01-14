@@ -1,5 +1,7 @@
 const { ApolloServer }  = require( 'apollo-server-express' );
 const { ApolloServerPluginDrainHttpServer } = require ('apollo-server-core');
+const {getUserFromToken} = require('./core/auth.js');
+
 const express = require( 'express');
 const http = require( 'http');
 const morgan = require('morgan');
@@ -21,21 +23,25 @@ async function startApolloServer(typeDefs, resolvers) {
     try{
     await mongoClient.connect(process.env.MONGODB_URL);
     }catch(e){
-      throw new Error("Database failed to connect");
       // exit the program
-      process.exit(1);
+      throw new Error("Database failed to connect");
 
     }
     // Same ApolloServer initialization as before, plus the drain plugin.
     const server = new ApolloServer({
      async context({req}){    
-        const token = req.headers.authorization
-        const user = getUserFromToken(token)
-
-         return {db : mongoClient, user};
+        let user = null;
+        const authHeader = req.headers.authorization || null;
+        if(authHeader){
+        const token = authHeader.split(' ')[1];
+        user = getUserFromToken(token, mongoClient);
+       }
+      
+       return {db : mongoClient, user};
       },
       typeDefs,
       resolvers,
+      introspection: process.env.NODE_ENV !== 'production',
       plugins: [ApolloServerPluginDrainHttpServer({ httpServer }),
      
     ],
