@@ -1,29 +1,8 @@
-const { ApolloServerPluginDrainHttpServer } = require ('apollo-server-core');
-const { ApolloServer }  = require( 'apollo-server-express' );
-const rateLimit  =  require('express-rate-limit');
-const express = require( 'express');
-
-const http = require( 'http');
-const morgan = require('morgan');
-const helmet  = require('helmet');
-
-const {getUserFromToken} = require('./core/auth.js');
-require("dotenv").config();
-
-const MongoClientConnection = require("./core/mongo_client.js")
-const {resolvers, typeDefs} = require('./schema/index');
-const PORT = process.env.PORT || 4000;
 
 async function startApolloServer(typeDefs, resolvers) {
     // Required logic for integrating with Express
     const app = express();
-    app.enable('trust proxy');
-    app.use(helmet());
-    app.use(morgan('dev'));
-    app.use(rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
-    }));
+   
 
     const httpServer = http.createServer(app);
     let mongoClient = new MongoClientConnection();
@@ -61,8 +40,8 @@ async function startApolloServer(typeDefs, resolvers) {
     });
   
     // Modified server startup
-    await new Promise(resolve => httpServer.listen({ port: PORT }, resolve));
-    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+    await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
   }
 
 //start the apollo server
