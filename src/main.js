@@ -1,4 +1,4 @@
-const { ApolloServerPluginDrainHttpServer } = require ('apollo-server-core');
+const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground ,ApolloServerPluginLandingPageLocalDefault} = require ('apollo-server-core');
 const { ApolloServer }  = require( 'apollo-server-express' );
 const rateLimit  =  require('express-rate-limit');
 const express = require( 'express');
@@ -49,7 +49,13 @@ async function startApolloServer(typeDefs, resolvers) {
       typeDefs,
       resolvers,
       introspection: process.env.NODE_ENV !== 'production',
-      plugins: [ApolloServerPluginDrainHttpServer({ httpServer }),
+      plugins: [
+        ApolloServerPluginDrainHttpServer({ httpServer }),
+
+        process.env.NODE_ENV === 'production' ?
+        ApolloServerPluginLandingPageGraphQLPlayground({
+          // options
+        }) :      ApolloServerPluginLandingPageLocalDefault({ footer: false })
      
     ],
     });
