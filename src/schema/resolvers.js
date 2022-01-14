@@ -20,8 +20,21 @@ const resolvers = {
     },
 
     Mutation : {
-        signup: verifySignUpInputs((parent, {input}, {db}, info) => {
-            return input
+        signup: verifySignUpInputs( async (parent, {input}, {db}, info) => {
+            const _user = await db.findUser(input.email);
+
+            if(_user) throw new AuthenticationError('Email already exists');
+
+            //add user to db addUser(email, password, name) 
+            try {
+                await db.addUser(input.email, input.password, input.name);
+            } catch (e) {
+                throw new Error("Account creation failed, please try again");
+             }
+
+            const user = await db.findUser(input.email);
+
+            return user;
         }),
     },
 

@@ -1,16 +1,13 @@
 const { ApolloServer }  = require( 'apollo-server-express' );
 const { ApolloServerPluginDrainHttpServer } = require ('apollo-server-core');
-const {getUserFromToken} = require('./core/auth.js');
-
 const express = require( 'express');
 const http = require( 'http');
 const morgan = require('morgan');
+const {getUserFromToken} = require('./core/auth.js');
 require("dotenv").config();
 
 const MongoClientConnection = require("./core/mongo_client.js")
-
 const {resolvers, typeDefs} = require('./schema/index');
-const { exit } = require('process');
 
 async function startApolloServer(typeDefs, resolvers) {
     // Required logic for integrating with Express
