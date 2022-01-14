@@ -1,6 +1,8 @@
 const {AuthenticationError} = require('apollo-server')
 const bcrypt = require ('bcrypt');
 const jwt = require('jsonwebtoken')
+var Validator = require("email-validator");
+
 // const {models} = require('./db')
 
 require("dotenv").config();
@@ -29,13 +31,22 @@ const authenticated = next => (root, args, context, info) => {
 }
 
 
-const verifyInputs = next => (root, {input}, context, info) => {
-  if (!context.user) {
-    throw new AuthenticationError('must authenticate')
-  }
+const verifyLoginInputs = next => (root, {input}, context, info) => {
+  if (!input.email && !input.password)  throw new AuthenticationError('Email and Password are required')
+  
 
-  return next(root, args, context, info)
+  if (!Validator.validate(input.email))  throw new AuthenticationError('Email is invalid')
+  return next(root, {input}, context, info);
 }
+
+const verifySignUpInputs = next => (root, {input}, context, info) => {
+  if (!input.email && !input.password && !input.name)  throw new AuthenticationError('Email and Password are required')
+  
+
+  if (!Validator.validate(input.email))  throw new AuthenticationError('Email is invalid');
+  return next(root, {input}, context, info);
+}
+
 
 
 function JWTSign(id, email,name ) {
@@ -48,7 +59,6 @@ function saltPassword(password) {
 }
 
 function comparePassword(password, hash) {
-
  return  bcrypt.compareSync(password, hash)
 }
 
@@ -66,5 +76,7 @@ module.exports = {
   authenticated,
   JWTSign,
   createToken,
-  verifyUser
+  verifyUser,
+  verifyLoginInputs,
+  verifySignUpInputs
 }

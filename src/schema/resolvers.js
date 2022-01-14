@@ -1,4 +1,4 @@
-const {authenticated, verifyUser} = require('../core/auth.js');
+const {authenticated, verifyUser, verifyLoginInputs, verifySignUpInputs} = require('../core/auth.js');
 const {AuthenticationError} = require('apollo-server')
 
 const resolvers = {
@@ -9,7 +9,7 @@ const resolvers = {
             return user
         }),
     
-      login: async (parent, {input}, context) => {
+      login: verifyLoginInputs( async (parent, {input}, context) => {
         const user = await context.db.findUser(input.email);
         console.log(input);
        
@@ -23,13 +23,13 @@ const resolvers = {
             id: 1,
             email: 'john@gmail.com',
         }
-      },
+      }),
     },
 
     Mutation : {
-        signup: (parent, {data}, {db}, info) => {
-            return data
-        }
+        signup: verifySignUpInputs((parent, {input}, {db}, info) => {
+            return input
+        }),
     }
 
 };
