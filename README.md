@@ -14,4 +14,5 @@
 ## Note Setting Authorization Headers
 Manually set Bearer token in gql playground to access `me` profile after authentication
 
+![image](https://user-images.githubusercontent.com/16451643/149540139-4c87152e-80db-4821-87be-2636aac2f7c0.png)
 
